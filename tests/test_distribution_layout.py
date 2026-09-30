@@ -26,8 +26,11 @@ COMMON_FILES = {
     "stop_server.ps1",
     "templates/index.html",
 }
+MANUAL_FILES = {"static/manual.html"} | {
+    path.relative_to(ROOT / "PRO").as_posix() for path in (ROOT / "PRO" / "static" / "manual_images").glob("*") if path.is_file()
+}
 EXPECTED_FILES = {
-    "PRO": COMMON_FILES,
+    "PRO": COMMON_FILES | MANUAL_FILES,
     "FREE": COMMON_FILES | {"license_verify.py"},
 }
 FORBIDDEN_NAMES = {
