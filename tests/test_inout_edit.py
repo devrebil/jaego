@@ -81,6 +81,13 @@ class InoutEditTest(unittest.TestCase):
                 ids = {t["id"] for t in default.get_json()} | {t["id"] for t in rest.get_json()}
                 self.assertEqual(len(ids), base + 1200)
                 self.assertEqual(len(client.get("/api/tx?limit=0").get_json()), base + 1200)
+                only = client.post("/api/tx/batch", json={"items": [{"date": "2026-10-02", "type": "매출", "contact": "명세표거래처",
+                    "sku": "S-1", "item_name": "필터", "sell_qty": 1, "sell_price": 1}]}).get_json()["ok"]
+                self.assertTrue(only)
+                filtered = client.get("/api/tx?contact=명세표거래처&type=매출&start=2026-10-01&end=2026-10-31&limit=0")
+                self.assertEqual([t["contact"] for t in filtered.get_json()], ["명세표거래처"])
+                self.assertEqual(filtered.headers["X-Total-Count"], "1")
+                self.assertEqual(client.get("/api/tx?contact=명세표거래처&type=매입&limit=0").get_json(), [])
 
     def test_inout_table_has_price_column(self):
         for edition in EDITIONS:
@@ -92,7 +99,7 @@ class InoutEditTest(unittest.TestCase):
         for edition in EDITIONS:
             html = (ROOT / edition / "templates" / "index.html").read_text(encoding="utf-8")
             for token in ("hsortClick('inout'", "hsortClick('inventory'", "pagerDraw('inout'",
-                          "pagerDraw('inventory'", "loadMoreInout", "불러오는 중", "function sortItems", "function drawItems"):
+                          "pagerDraw('inventory'", "loadMoreInout", "async function stmtLoadRows", "불러오는 중", "function sortItems", "function drawItems"):
                 self.assertIn(token, html, f"{edition}: {token}")
 
 

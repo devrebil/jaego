@@ -2504,9 +2504,9 @@ async function savePurchase(id){
 }
 
 // ── 거래명세표 ──
-let STMT_ROWS=[],STMT_CONTACT=null,STMT_CONTACTS=[],STMT_ALLTX=[],STMT_SET={};
+let STMT_ROWS=[],STMT_CONTACT=null,STMT_CONTACTS=[],STMT_SET={},STMT_SEQ=0;
 async function openStmtModal(){
-  [STMT_CONTACTS,STMT_ALLTX,STMT_SET]=await Promise.all([api('/api/contacts'),api('/api/tx'),api('/api/settings')]);
+  [STMT_CONTACTS,STMT_SET]=await Promise.all([api('/api/contacts'),api('/api/settings')]);
   if(!TX_TYPES.length)TX_TYPES=await api('/api/tx/types');
   STMT_CONTACT=null;STMT_ROWS=[];
   const t=new Date(),first=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-01`;
@@ -2543,9 +2543,15 @@ function stmtRowCalc(t){
   else{q=+t.return_qty||0;p=+t.return_price||0;}
   return{qty:sg*q,price:p,supply:Math.round(sg*q*p)};
 }
-function stmtLoadRows(){
-  const name=(el('st-contact')?.value||'').trim(),type=el('st-type').value,s=el('st-start').value,e=el('st-end').value;
-  STMT_ROWS=STMT_ALLTX.filter(t=>t.contact===name&&(!type||t.type===type)&&(!s||t.date>=s)&&(!e||t.date<=e)).map(t=>({t,sel:true}));
+async function stmtLoadRows(){ // 거래처·구분·기간으로 서버에서 전부 조회(1000건 제한 없음)
+  const name=(el('st-contact')?.value||'').trim(),type=el('st-type').value,s=el('st-start').value,e=el('st-end').value,seq=++STMT_SEQ;
+  if(!name){STMT_ROWS=[];stmtRenderList();return;}
+  const box=el('st-list');if(box)box.innerHTML='<div class="empty" style="padding:18px;text-align:center">⏳ 거래 내역을 불러오는 중입니다… 내역이 많으면 시간이 걸릴 수 있습니다.</div>';
+  el('st-sum').textContent='';
+  const qs=new URLSearchParams({contact:name,limit:0});if(type)qs.set('type',type);if(s)qs.set('start',s);if(e)qs.set('end',e);
+  let rows;try{rows=await api('/api/tx?'+qs);}catch(err){if(seq===STMT_SEQ&&box)box.innerHTML='<div class="empty" style="padding:18px;text-align:center;color:var(--danger)">내역을 불러오지 못했습니다. 다시 시도하세요.</div>';return;}
+  if(seq!==STMT_SEQ||!el('st-list'))return; // 더 최근 요청이 있으면 이전 응답은 버림
+  STMT_ROWS=rows.map(t=>({t,sel:true}));
   STMT_ROWS.sort((a,b)=>(a.t.date||'').localeCompare(b.t.date||'')||a.t.id-b.t.id);
   stmtRenderList();
 }

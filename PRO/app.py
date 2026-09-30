@@ -1647,6 +1647,10 @@ def api_tx():
     q = "SELECT * FROM transactions WHERE 1=1"; p = []
     if start: q += " AND date>=?"; p.append(start)
     if end: q += " AND date<=?"; p.append(end)
+    contact = request.args.get("contact", "")
+    if contact: q += " AND contact=?"; p.append(contact)
+    tx_type = request.args.get("type", "")
+    if tx_type: q += " AND type=?"; p.append(tx_type)
     # limit 기본 1000건(기존 동작), 0이면 전부, offset으로 이어서 조회. 전체 건수는 X-Total-Count 헤더로 전달
     limit = request.args.get("limit", default=1000, type=int)
     offset = max(0, request.args.get("offset", default=0, type=int))
