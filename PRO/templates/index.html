@@ -3422,7 +3422,7 @@ const INOUT_COLS=[
   ['date','일자'],['created_at','정확한 기록시각'],['type','구분'],['contact','거래처'],['item_name','품목'],
   ['channel','채널'],['order_no','주문번호'],['shipment_no','송장번호'],['project_ref','프로젝트'],
   ['distributor','유통사'],['manufacturer','제조사'],
-  ['buy_qty','입고'],['sell_qty','출고'],['return_qty','반품'],['total','합계'],['note','사유/비고']
+  ['buy_qty','입고'],['sell_qty','출고'],['return_qty','반품'],['price','단가'],['total','합계'],['note','사유/비고']
 ];
 let inoutRows=[],INOUT_ITEM_INFO={};
 let inoutHidden=JSON.parse(localStorage.getItem('inout_hidden')||'[]');
@@ -3444,6 +3444,7 @@ function renderInoutData(){
   el('inout-head').innerHTML=cols.map(([k,l])=>`<th draggable="true" data-col="${k}" ondragstart="colDragStart(event,'inout')" ondragover="colDragOver(event)" ondragleave="this.classList.remove('drag-over')" ondrop="colDrop(event,'inout','${k}')">${getLabel('inout',k,l)}</th>`).join('')+'<th></th>';
   el('inout-body').innerHTML=inoutRows.length?inoutRows.map(t=>`<tr data-tx-id="${t.id}">${cols.map(([k])=>{
     if(k==='type')return `<td>${txTypeBadge(t[k])}</td>`;
+    if(k==='price')return `<td>${won(t.type==='매입'?t.buy_price:t.type==='매출'?t.sell_price:t.return_price)}</td>`;
     if(['buy_qty','sell_qty','return_qty','total'].includes(k))return `<td>${won(t[k])}</td>`;
     if(k==='distributor'||k==='manufacturer')return `<td>${esc(INOUT_ITEM_INFO[t.sku]?.[k]||'')}</td>`;
     return `<td>${esc(t[k]||'')}</td>`;
