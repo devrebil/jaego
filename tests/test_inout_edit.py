@@ -89,26 +89,19 @@ class InoutEditTest(unittest.TestCase):
                 self.assertEqual(filtered.headers["X-Total-Count"], "1")
                 self.assertEqual(client.get("/api/tx?contact=명세표거래처&type=매입&limit=0").get_json(), [])
 
-    def test_sample_data_only_on_fresh_install(self):
+    def test_fresh_install_starts_empty(self):
         for edition in EDITIONS:
             with self.subTest(edition=edition), tempfile.TemporaryDirectory() as tmp:
-                module = load_app(edition, Path(tmp))  # 새 설치: 예시 데이터 생성
-                conn = module.get_db("contacts")
-                self.assertGreater(conn.execute("SELECT COUNT(*) FROM contacts").fetchone()[0], 0)
-                conn.close()
-                module.set_setting("seeded", "")  # 예전 버전 DB처럼 표식이 없고
+                module = load_app(edition, Path(tmp))  # 새 설치: 예시 데이터 없이 빈 상태
                 for domain, table in (("contacts", "contacts"), ("items", "items"), ("transactions", "transactions"),
-                                      ("notice", "notices"), ("memo", "memos"), ("projects", "projects")):
-                    c = module.get_db(domain); c.execute(f"DELETE FROM {table}"); c.commit(); c.close()
-                c = module.get_db("contacts")
-                c.execute("INSERT INTO contacts(name) VALUES('기존고객거래처')"); c.commit(); c.close()
-                module.bootstrap()  # 업데이트 후 재시작: 실제 데이터가 있으니 예시를 추가하면 안 됨
-                for domain, table, expect in (("contacts", "contacts", 1), ("items", "items", 0), ("transactions", "transactions", 0),
-                                              ("notice", "notices", 0), ("memo", "memos", 0), ("projects", "projects", 0)):
-                    c = module.get_db(domain)
-                    self.assertEqual(c.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0], expect, (edition, table))
-                    c.close()
-                self.assertEqual(module.get_setting("seeded"), "1")
+                                      ("notice", "notices"), ("memo", "memos"), ("projects", "projects"),
+                                      ("projects", "cards"), ("vouchers", "vouchers")):
+                    conn = module.get_db(domain)
+                    self.assertEqual(conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0], 0, (edition, table))
+                    conn.close()
+                users = module.get_db("users")
+                self.assertEqual([r["username"] for r in users.execute("SELECT username FROM users")], ["admin"])
+                users.close()
 
     def test_inout_table_has_price_column(self):
         for edition in EDITIONS:
