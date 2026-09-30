@@ -61,6 +61,27 @@ class InoutEditTest(unittest.TestCase):
                 self.assertNotIn(tid, [t["id"] for t in client.get("/api/tx").get_json()])
                 self.assertIn(stock("T-1"), (None, 0))
 
+    def test_tx_list_paging_and_total_header(self):
+        for edition in EDITIONS:
+            with self.subTest(edition=edition), tempfile.TemporaryDirectory() as tmp:
+                module = load_app(edition, Path(tmp))
+                client = module.app.test_client()
+                with client.session_transaction() as sess:
+                    sess["user"], sess["role"] = "tester", "admin"
+                base = int(client.get("/api/tx?limit=0").headers["X-Total-Count"])
+                items = [{"date": "2026-10-01", "type": "매입", "sku": f"P-{i}", "item_name": "페이지", "buy_qty": 1,
+                          "buy_price": 1} for i in range(1200)]
+                for start in range(0, len(items), 500):  # 일괄 API는 한 번에 최대 500건
+                    self.assertTrue(client.post("/api/tx/batch", json={"items": items[start:start + 500]}).get_json()["ok"])
+                default = client.get("/api/tx")
+                self.assertEqual(len(default.get_json()), 1000)
+                self.assertEqual(int(default.headers["X-Total-Count"]), base + 1200)
+                rest = client.get("/api/tx?offset=1000&limit=1000")
+                self.assertEqual(len(rest.get_json()), base + 200)
+                ids = {t["id"] for t in default.get_json()} | {t["id"] for t in rest.get_json()}
+                self.assertEqual(len(ids), base + 1200)
+                self.assertEqual(len(client.get("/api/tx?limit=0").get_json()), base + 1200)
+
     def test_inout_table_has_price_column(self):
         for edition in EDITIONS:
             html = (ROOT / edition / "templates" / "index.html").read_text(encoding="utf-8")
@@ -71,7 +92,7 @@ class InoutEditTest(unittest.TestCase):
         for edition in EDITIONS:
             html = (ROOT / edition / "templates" / "index.html").read_text(encoding="utf-8")
             for token in ("hsortClick('inout'", "hsortClick('inventory'", "pagerDraw('inout'",
-                          "pagerDraw('inventory'", "function sortItems", "function drawItems"):
+                          "pagerDraw('inventory'", "loadMoreInout", "불러오는 중", "function sortItems", "function drawItems"):
                 self.assertIn(token, html, f"{edition}: {token}")
 
 

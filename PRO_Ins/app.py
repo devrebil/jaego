@@ -1648,8 +1648,15 @@ def api_tx():
     q = "SELECT * FROM transactions WHERE 1=1"; p = []
     if start: q += " AND date>=?"; p.append(start)
     if end: q += " AND date<=?"; p.append(end)
-    q += " ORDER BY date DESC, id DESC LIMIT 1000"
+    # limit 기본 1000건(기존 동작), 0이면 전부, offset으로 이어서 조회. 전체 건수는 X-Total-Count 헤더로 전달
+    limit = request.args.get("limit", default=1000, type=int)
+    offset = max(0, request.args.get("offset", default=0, type=int))
     conn = get_db("transactions")
+    total_count = conn.execute(q.replace("SELECT *", "SELECT COUNT(*)", 1), p).fetchone()[0]
+    q += " ORDER BY date DESC, id DESC"
+    if limit > 0:
+        q += " LIMIT ? OFFSET ?"
+        p = p + [limit, offset]
     rows = list(conn.execute(q, p).fetchall())
     focus_id = request.args.get("focus_id", type=int)
     if focus_id and not any(r["id"] == focus_id for r in rows):
@@ -1657,7 +1664,9 @@ def api_tx():
         if focus:
             rows.append(focus)
     conn.close()
-    return jsonify(rows_to_list(rows))
+    resp = jsonify(rows_to_list(rows))
+    resp.headers["X-Total-Count"] = str(total_count)
+    return resp
 
 TX_FIELDS = ("date", "type", "contact", "sku", "item_name", "spec", "unit",
              "buy_qty", "buy_price", "sell_qty", "sell_price",

@@ -3322,10 +3322,10 @@ function hsortClick(kind,k){const s=HSORT[kind];if(s.k===k)s.dir*=-1;else HSORT[
 function hsortMark(kind,k){const s=HSORT[kind];return s.k===k?(s.dir>0?' ▲':' ▼'):'';}
 function hsortRows(kind,rows,valueOf,numKeys){const {k,dir}=HSORT[kind];if(!k)return rows;return [...rows].sort((a,b)=>{const x=valueOf(a,k),y=valueOf(b,k);return(numKeys.includes(k)?(Number(x)||0)-(Number(y)||0):String(x??'').localeCompare(String(y??''),'ko',{numeric:true}))*dir;});}
 function pageSlice(kind,rows){const p=PAGER[kind],pages=Math.max(1,Math.ceil(rows.length/p.size));p.page=Math.min(Math.max(1,p.page),pages);return rows.slice((p.page-1)*p.size,p.page*p.size);}
-function pagerHtml(kind,total){const p=PAGER[kind],pages=Math.max(1,Math.ceil(total/p.size));return `<span class="meta">총 ${won(total)}개</span><span style="flex:1"></span><button class="tb-btn btn-gray btn-sm" ${p.page<=1?'disabled':''} onclick="pagerGo('${kind}',${p.page-1})">◀ 이전</button><span class="meta">${p.page} / ${pages}</span><button class="tb-btn btn-gray btn-sm" ${p.page>=pages?'disabled':''} onclick="pagerGo('${kind}',${p.page+1})">다음 ▶</button><select class="inp" style="width:auto" onchange="pagerSize('${kind}',this.value)">${[20,50,100,200].map(n=>`<option value="${n}" ${n===p.size?'selected':''}>${n}개씩</option>`).join('')}</select>`;}
+function pagerHtml(kind,total,extra=''){const p=PAGER[kind],pages=Math.max(1,Math.ceil(total/p.size));return `<span class="meta">총 ${won(total)}개</span>${extra}<span style="flex:1"></span><button class="tb-btn btn-gray btn-sm" ${p.page<=1?'disabled':''} onclick="pagerGo('${kind}',${p.page-1})">◀ 이전</button><span class="meta">${p.page} / ${pages}</span><button class="tb-btn btn-gray btn-sm" ${p.page>=pages?'disabled':''} onclick="pagerGo('${kind}',${p.page+1})">다음 ▶</button><select class="inp" style="width:auto" onchange="pagerSize('${kind}',this.value)">${[20,50,100,200].map(n=>`<option value="${n}" ${n===p.size?'selected':''}>${n}개씩</option>`).join('')}</select>`;}
 function pagerGo(kind,n){PAGER[kind].page=n;PAGER[kind].redraw();}
 function pagerSize(kind,n){PAGER[kind].size=Number(n);PAGER[kind].page=1;PAGER[kind].redraw();}
-function pagerDraw(kind,total){const box=el(kind+'-pager');if(box)box.innerHTML=pagerHtml(kind,total);}
+function pagerDraw(kind,total,extra=''){const box=el(kind+'-pager');if(box)box.innerHTML=pagerHtml(kind,total,extra);}
 
 // ── 재고 현황 ──
 const INV_COLS=[['sku','품목코드'],['item_name','품목명'],['spec','규격'],['unit','단위'],['location','위치'],['distributor','유통사'],['manufacturer','제조사'],['in_qty','입고'],['out_qty','출고'],['ret_qty','반품'],['stock','현재고'],['buy_amt','매입액'],['sell_amt','매출액'],['gross_profit','추정 매출총이익'],['cash_flow','현금흐름']];
@@ -3452,8 +3452,24 @@ const INOUT_COLS=[
 let inoutRows=[],INOUT_ITEM_INFO={};
 let inoutHidden=JSON.parse(localStorage.getItem('inout_hidden')||'[]');
 restoreColumnOrder(INOUT_COLS,'inout_order');
+const INOUT_CHUNK=1000;let INOUT_TOTAL=0,INOUT_LOADING=false;
+async function fetchTx(offset,limit,focusId){
+  const r=await fetch(`/api/tx?offset=${offset}&limit=${limit}`+(focusId?`&focus_id=${focusId}`:''));
+  return {rows:await r.json(),total:Number(r.headers.get('X-Total-Count'))||0};
+}
+async function loadMoreInout(all){ // 더보기·전체 불러오기: 1000건씩 이어서 받아 붙이고, 진행 상황을 계속 표시
+  if(INOUT_LOADING)return;INOUT_LOADING=true;renderInoutData();
+  try{do{const {rows,total}=await fetchTx(inoutRows.length,INOUT_CHUNK);INOUT_TOTAL=total;
+    const seen=new Set(inoutRows.map(x=>x.id)),fresh=rows.filter(x=>!seen.has(x.id));inoutRows=inoutRows.concat(fresh);renderInoutData();
+    if(!rows.length)break;}while(all&&inoutRows.length<INOUT_TOTAL);}
+  catch(e){alert('입출고 내역을 불러오지 못했습니다. 잠시 후 다시 시도하세요.');}
+  INOUT_LOADING=false;renderInoutData();
+}
 RENDER.inout=async function(){
-  const [rows,items]=await Promise.all([api('/api/tx'+(TX_FOCUS_ID?`?focus_id=${TX_FOCUS_ID}`:'')),api('/api/items')]);
+  el('tab-inout').innerHTML=`<h2 class="page-title">🔄 입출고 관리</h2><div class="panel"><div class="pb" style="padding:30px;text-align:center;color:var(--muted)">⏳ 입출고 내역을 불러오는 중입니다…</div></div>`;
+  const keep=Math.max(INOUT_CHUNK,inoutRows.length); // 수정·삭제 뒤 새로고침해도 더보기로 불러온 만큼 유지
+  const [tx,items]=await Promise.all([fetchTx(0,TX_FOCUS_ID?0:keep,TX_FOCUS_ID),api('/api/items')]);
+  const rows=tx.rows;INOUT_TOTAL=tx.total;
   inoutRows=rows;INOUT_ITEM_INFO={};items.forEach(x=>INOUT_ITEM_INFO[x.sku]=x); // 전표의 품목코드로 품목의 유통사/제조사 연결
   el('tab-inout').innerHTML=`<h2 class="page-title">🔄 입출고 관리</h2>
    <div class="toolbar"><button class="tb-btn btn-green" onclick="openStockModal('in')">📥 입고</button><button class="tb-btn btn-primary" onclick="openStockModal('out')">📤 출고</button><a class="tb-btn btn-green" href="/api/export/inout">엑셀 다운로드</a><span style="font-size:12px;color:var(--muted)">매입=입고, 매출=출고로 재고에 반영됩니다.</span><button id="inout-filter-btn" class="filter-collapse-btn${filterPanelOpen.inout?' open':''}" style="margin-left:auto" onclick="toggleFilterPanel('inout')">${filterPanelOpen.inout?'▲ 헤더설정':'▼ 헤더설정'}</button></div>
@@ -3464,13 +3480,18 @@ RENDER.inout=async function(){
   TX_FOCUS_ID=null;
 };
 function toggleInoutCol(k){const i=inoutHidden.indexOf(k);if(i<0)inoutHidden.push(k);else inoutHidden.splice(i,1);localStorage.setItem('inout_hidden',JSON.stringify(inoutHidden));RENDER.inout();}
+function inoutMoreHtml(){
+  if(INOUT_LOADING)return `<span class="meta" style="color:var(--primary);font-weight:700">⏳ 불러오는 중입니다… ${won(inoutRows.length)} / ${won(INOUT_TOTAL)}건 (잠시만 기다려 주세요)</span>`;
+  if(inoutRows.length>=INOUT_TOTAL)return '';
+  return `<span class="meta">전체 ${won(INOUT_TOTAL)}건 중 최근 ${won(inoutRows.length)}건만 불러왔습니다. 정렬은 불러온 내역 안에서만 적용됩니다.</span><button class="tb-btn btn-primary btn-sm" onclick="loadMoreInout(false)">더보기 (+${won(INOUT_CHUNK)}건)</button><button class="tb-btn btn-gray btn-sm" onclick="loadMoreInout(true)">전체 불러오기</button>`;
+}
 function inoutPrice(t){return t.type==='매입'?t.buy_price:t.type==='매출'?t.sell_price:t.return_price;}
 function inoutSortValue(t,k){return k==='price'?inoutPrice(t):(k==='distributor'||k==='manufacturer')?(INOUT_ITEM_INFO[t.sku]?.[k]||''):t[k];}
 function renderInoutData(){
   if(!el('inout-head'))return;
   const cols=INOUT_COLS.filter(([k])=>!inoutHidden.includes(k));
   el('inout-head').innerHTML=cols.map(([k,l])=>`<th draggable="true" data-col="${k}" ondragstart="colDragStart(event,'inout')" ondragover="colDragOver(event)" ondragleave="this.classList.remove('drag-over')" onclick="hsortClick('inout','${k}')" style="cursor:pointer" ondrop="colDrop(event,'inout','${k}')">${getLabel('inout',k,l)}${hsortMark('inout',k)}</th>`).join('')+'<th></th>';
-  const sorted=hsortRows('inout',inoutRows,inoutSortValue,['buy_qty','sell_qty','return_qty','total','price']),pageRows=pageSlice('inout',sorted);pagerDraw('inout',sorted.length);
+  const sorted=hsortRows('inout',inoutRows,inoutSortValue,['buy_qty','sell_qty','return_qty','total','price']),pageRows=pageSlice('inout',sorted);pagerDraw('inout',sorted.length,inoutMoreHtml());
   el('inout-body').innerHTML=pageRows.length?pageRows.map(t=>`<tr data-tx-id="${t.id}">${cols.map(([k])=>{
     if(k==='type')return `<td>${txTypeBadge(t[k])}</td>`;
     if(k==='price')return `<td>${won(inoutPrice(t))}</td>`;
