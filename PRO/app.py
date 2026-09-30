@@ -91,6 +91,14 @@ def _seed_sample():
     '완전 초기화'로 이 예시 데이터를 지우고 시작하도록 안내한다."""
     if get_setting("seeded") == "1":
         return
+    # 이미 쓰던 DB(예전 버전에서 업데이트)면 예시 데이터를 넣지 않는다: 거래처·품목·거래 중 하나라도 있으면 사용 중으로 본다
+    for domain, table in (("contacts", "contacts"), ("items", "items"), ("transactions", "transactions")):
+        used = get_db(domain)
+        has_rows = used.execute(f"SELECT COUNT(*) n FROM {table}").fetchone()["n"] > 0
+        used.close()
+        if has_rows:
+            set_setting("seeded", "1")
+            return
     ymd = lambda d: (datetime.now() - timedelta(days=d)).strftime("%Y-%m-%d")
     c = get_db("contacts")
     if c.execute("SELECT COUNT(*) n FROM contacts").fetchone()["n"] == 0:
