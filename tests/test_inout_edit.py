@@ -67,6 +67,13 @@ class InoutEditTest(unittest.TestCase):
             self.assertIn("['price','단가']", html, edition)
             self.assertIn("k==='price'", html, edition)
 
+    def test_tables_have_sort_and_pager(self):
+        for edition in EDITIONS:
+            html = (ROOT / edition / "templates" / "index.html").read_text(encoding="utf-8")
+            for token in ("hsortClick('inout'", "hsortClick('inventory'", "pagerDraw('inout'",
+                          "pagerDraw('inventory'", "function sortItems", "function drawItems"):
+                self.assertIn(token, html, f"{edition}: {token}")
+
 
 if __name__ == "__main__":
     unittest.main()
