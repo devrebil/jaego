@@ -283,3 +283,7 @@
 - [x] PRO_Ins 설치 프로그램 재빌드(Python 3.12 + PyInstaller 6.22.3 + Inno Setup 6), 빌드 exe 스모크 테스트 통과.
 - [x] PRO_Ins.zip 생성(Setup.exe + README.md).
 - [ ] FREE.zip은 이번 범위에서 제외.
+
+## 고객용 업데이트 안내문 체크리스트
+
+- [x] 덮어쓰기 업데이트 절차(ZIP 방식·Setup.exe 방식), 백업, 증상별 해결, 첫 설치 시 완전 초기화 안내를 `PRO_업데이트_안내.html`로 작성.
