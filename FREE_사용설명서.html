@@ -1,0 +1,259 @@
+<!-- 재고 관리 FREE 버전의 쉬운 설명과 자세한 설명을 함께 제공하는 독립형 사용설명서 -->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>재고 관리 FREE 사용설명서</title>
+  <style>
+    :root{--ink:#142033;--muted:#66758b;--line:#dce5f0;--soft:#f4f8fc;--brand:#1674d1;--brand2:#0d4f98;--good:#087f5b;--warn:#a35a00;--danger:#c23434;--card:#fff;--shadow:0 16px 40px rgba(25,65,110,.12)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:#edf3f9;font-family:"Pretendard","Noto Sans KR","Malgun Gothic",sans-serif;line-height:1.7;word-break:keep-all}button,input{font:inherit}
+    .hero{background:linear-gradient(135deg,#0d4f98,#1674d1 62%,#46a4ef);color:#fff;padding:42px max(24px,calc((100vw - 1180px)/2));position:relative;overflow:hidden}.hero:after{content:"FREE";position:absolute;right:5%;top:-42px;font-size:180px;font-weight:900;color:#fff1;letter-spacing:-10px}.hero-inner{position:relative;z-index:1;max-width:850px}.eyebrow{display:inline-flex;gap:8px;align-items:center;padding:6px 11px;border:1px solid #ffffff55;border-radius:999px;background:#ffffff16;font-size:13px;font-weight:800}.hero h1{font-size:clamp(30px,5vw,52px);line-height:1.15;margin:18px 0 10px;letter-spacing:-1.5px}.hero p{margin:0;max-width:720px;color:#e8f4ff;font-size:16px}.hero-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:24px}.mode-btn,.print-btn{border:1px solid #ffffff66;border-radius:10px;padding:10px 15px;background:#ffffff18;color:#fff;cursor:pointer;font-weight:800}.mode-btn.active{background:#fff;color:var(--brand2);border-color:#fff}.mode-btn:hover,.print-btn:hover{transform:translateY(-1px);background:#ffffff2c}.updated{margin-top:14px;font-size:12px;color:#d7ebff}
+    .layout{display:grid;grid-template-columns:245px minmax(0,1fr);gap:24px;max-width:1180px;margin:0 auto;padding:28px 22px 70px}.side{position:sticky;top:18px;align-self:start;background:#fff;border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:0 8px 26px #24547b12}.side strong{display:block;margin-bottom:10px}.side a{display:block;color:#4e5f74;text-decoration:none;font-size:13px;padding:7px 9px;border-radius:8px}.side a:hover{background:#eaf4ff;color:var(--brand2)}.side .search{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 10px;margin:3px 0 12px;outline:none}.side .search:focus{border-color:var(--brand)}
+    main{min-width:0}.guide{display:none}.guide.active{display:block}.section{scroll-margin-top:20px;margin-bottom:22px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:clamp(20px,3vw,32px);box-shadow:0 8px 30px #24547b0c}.section h2{margin:0 0 16px;font-size:24px;letter-spacing:-.6px}.section h3{font-size:17px;margin:24px 0 9px}.section p{margin:7px 0}.lead{font-size:16px;color:#34465c}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.card{border:1px solid var(--line);border-radius:14px;padding:17px;background:#fff}.card h3{margin:0 0 7px;font-size:16px}.card p{margin:0;color:var(--muted);font-size:14px}.num{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:9px;background:#e7f2ff;color:var(--brand2);font-weight:900;margin-bottom:9px}.menu-icon{font-size:24px;display:block;margin-bottom:7px}.pill{display:inline-flex;padding:3px 8px;border-radius:999px;background:#e7f2ff;color:var(--brand2);font-size:11px;font-weight:800}.pill.pro{background:#fff0db;color:#8b4b00}.callout{border-left:4px solid var(--brand);background:#edf6ff;border-radius:0 12px 12px 0;padding:14px 16px;margin:15px 0}.callout.warn{border-color:#e38a17;background:#fff8e9}.callout.danger{border-color:var(--danger);background:#fff1f1}.callout.good{border-color:var(--good);background:#eaf9f3}.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}.steps li{position:relative;padding:0 0 18px 44px;min-height:38px}.steps li:before{counter-increment:step;content:counter(step);position:absolute;left:0;top:0;width:29px;height:29px;border-radius:9px;display:grid;place-items:center;background:var(--brand);color:#fff;font-weight:900}.steps li:not(:last-child):after{content:"";position:absolute;left:14px;top:32px;width:1px;height:calc(100% - 28px);background:#c7d9eb}
+    table{width:100%;border-collapse:collapse;font-size:14px}th,td{border-bottom:1px solid var(--line);padding:11px 10px;text-align:left;vertical-align:top}th{background:#f2f7fc;color:#30445d}kbd{display:inline-block;border:1px solid #b8c6d8;border-bottom-width:2px;border-radius:6px;padding:1px 7px;background:#fff;font:700 12px/1.8 ui-monospace,monospace;color:#26384f}.checklist{list-style:none;padding:0}.checklist li{padding:7px 0 7px 29px;position:relative}.checklist li:before{content:"✓";position:absolute;left:0;color:var(--good);font-weight:900}.muted{color:var(--muted);font-size:13px}details{border:1px solid var(--line);border-radius:12px;margin:9px 0;background:#fff}summary{cursor:pointer;font-weight:800;padding:13px 15px}details>div{padding:0 15px 15px;color:#46596f}.topic.hidden{display:none}.empty-search{display:none;background:#fff3d9;border:1px solid #f0cc7d;border-radius:12px;padding:15px;margin-bottom:15px}.footer{text-align:center;color:#758399;font-size:12px;padding:5px 20px 38px}
+    @media(max-width:850px){.layout{grid-template-columns:1fr;padding:18px 13px 50px}.side{position:static}.side nav{display:grid;grid-template-columns:repeat(2,1fr)}.grid,.grid.three{grid-template-columns:1fr}.hero{padding:30px 18px}.hero:after{font-size:110px;top:10px}.section{border-radius:14px}.table-wrap{overflow:auto}body{word-break:normal}}
+    @media print{body{background:#fff}.hero{padding:20px;color:#000;background:#fff;border-bottom:2px solid #222}.hero p,.updated{color:#333}.hero:after,.hero-actions,.side,.footer{display:none}.layout{display:block;max-width:none;padding:0}.guide{display:block!important}.guide:before{display:block;font-size:22px;font-weight:900;margin:24px 0 10px}.guide.easy:before{content:"쉬운 설명"}.guide.detail:before{content:"자세한 설명"}.section{box-shadow:none;break-inside:avoid;padding:17px;margin:0 0 13px}.card{break-inside:avoid}}
+  </style>
+</head>
+<body data-mode="easy">
+  <header class="hero">
+    <div class="hero-inner">
+      <span class="eyebrow">📘 재고 관리 <b>FREE</b></span>
+      <h1>FREE 버전 사용설명서</h1>
+      <p>처음 쓰는 분은 쉬운 설명부터, 관리자와 실무 담당자는 자세한 설명에서 메뉴별 사용법과 백업 방법을 확인하세요.</p>
+      <div class="hero-actions">
+        <button class="mode-btn active" data-mode="easy" onclick="setMode('easy')">쉬운 설명</button>
+        <button class="mode-btn" data-mode="detail" onclick="setMode('detail')">자세한 설명</button>
+        <button class="print-btn" onclick="window.print()">🖨 인쇄·PDF 저장</button>
+      </div>
+      <div class="updated">기준 버전 2026-09-29 · 이 파일은 프로그램과 분리된 독립 설명서입니다.</div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="side">
+      <strong>설명서 찾기</strong>
+      <input class="search" id="guide-search" type="search" placeholder="예: 재고, 백업, Pro 전환" aria-label="설명서 검색" oninput="searchGuide(this.value)">
+      <nav id="easy-nav">
+        <a href="#free-e-start">처음 실행</a><a href="#free-e-flow">기본 사용 순서</a><a href="#free-e-menu">메뉴 한눈에 보기</a><a href="#free-e-todo">투두 자동 일정</a><a href="#free-e-settings">설정·백업</a><a href="#free-e-pro">Pro 기능 차이</a>
+      </nav>
+      <nav id="detail-nav" hidden>
+        <a href="#free-d-install">설치·접속</a><a href="#free-d-account">계정</a><a href="#free-d-home">홈·일정·메모</a><a href="#free-d-manage">거래처·품목</a><a href="#free-d-stock">재고·입출고</a><a href="#free-d-settings">설정·백업</a><a href="#free-d-upgrade">Pro 전환</a><a href="#free-d-shortcut">단축키</a><a href="#free-d-help">문제 해결</a>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="empty-search" id="empty-search">검색 결과가 없습니다. 다른 단어로 찾아보세요.</div>
+
+      <article class="guide easy active">
+        <section class="section topic" id="free-e-start" data-keywords="설치 실행 로그인 관리자 비밀번호 원클릭 예시 데이터 더미 네이버 카카오 완전 초기화">
+          <span class="pill">5분 시작</span>
+          <h2>처음에는 이것만 하세요</h2>
+          <div class="grid">
+            <div class="card"><span class="num">1</span><h3>압축을 완전히 풉니다</h3><p>ZIP 안에서 바로 실행하지 말고 원하는 일반 폴더에 모두 압축 해제합니다.</p></div>
+            <div class="card"><span class="num">2</span><h3>ONE_CLICK_START.bat 실행</h3><p>인터넷이 연결된 Windows에서 더블클릭하고 관리자 승인 창에서 예를 누릅니다.</p></div>
+            <div class="card"><span class="num">3</span><h3>처음 로그인</h3><p>아이디 <b>admin</b>, 비밀번호 <b>admin</b>으로 로그인합니다.</p></div>
+            <div class="card"><span class="num">4</span><h3>비밀번호부터 변경</h3><p>설정 → 내 계정에서 관리자 비밀번호와 이메일, 찾기 질문을 저장합니다.</p></div>
+          </div>
+          <div class="callout warn"><b>중요.</b> 서버 PC를 끄거나 절전 상태로 두면 다른 PC에서 접속할 수 없습니다.</div>
+          <div class="callout good"><b>예시 데이터로 시작합니다.</b> 처음 실행하면 화면 구경을 위해 네이버·카카오 같은 예시 거래처와 품목·입출고 내역이 미리 들어 있습니다. 실제 업무 데이터를 입력하기 전에 <b>설정 → 회사·DB → 완전 초기화</b>로 예시 데이터를 지우고 시작하세요.</div>
+        </section>
+
+        <section class="section topic" id="free-e-flow" data-keywords="순서 거래처 품목 입고 출고 재고 일상 업무">
+          <h2>가장 쉬운 기본 사용 순서</h2>
+          <ol class="steps">
+            <li><b>거래처 등록</b><br><span class="muted">관리 → 거래처 등록에서 매입처와 판매처를 먼저 입력합니다.</span></li>
+            <li><b>품목 등록</b><br><span class="muted">관리 → 품목 등록에서 품목코드, 품목명, 단위, 위치와 가격을 입력합니다.</span></li>
+            <li><b>처음 들어온 재고 입력</b><br><span class="muted">입출고 관리에서 입고를 눌러 품목과 수량을 기록합니다.</span></li>
+            <li><b>판매하거나 내보낸 수량 입력</b><br><span class="muted">입출고 관리에서 출고를 눌러 수량을 기록합니다.</span></li>
+            <li><b>재고 현황 확인</b><br><span class="muted">관리 → 재고 현황에서 현재고가 맞는지 확인합니다.</span></li>
+          </ol>
+          <div class="callout good">입고는 재고를 늘리고 출고는 재고를 줄입니다. 잘못 입력했다면 입출고 내역을 먼저 확인한 뒤 수정하세요.</div>
+        </section>
+
+        <section class="section topic" id="free-e-menu" data-keywords="메뉴 홈 캘린더 메모 거래처 품목 재고 입출고 설정">
+          <h2>FREE 메뉴 한눈에 보기</h2>
+          <div class="grid three">
+            <div class="card"><span class="menu-icon">🏠</span><h3>홈</h3><p>오늘 필요한 일정, 달력, 매입·매출 요약과 메모를 한 화면에서 봅니다.</p></div>
+            <div class="card"><span class="menu-icon">📅</span><h3>캘린더</h3><p>일간·주간·월간 화면에서 일정을 등록하고 완료 여부를 관리합니다.</p></div>
+            <div class="card"><span class="menu-icon">📝</span><h3>메모</h3><p>개인 메모를 태그로 나누고 완료한 메모는 완료목록에서 찾습니다.</p></div>
+            <div class="card"><span class="menu-icon">🏬</span><h3>거래처 등록</h3><p>회사명, 사업자번호, 담당자, 연락처와 관련 이미지를 저장합니다.</p></div>
+            <div class="card"><span class="menu-icon">📦</span><h3>품목 등록</h3><p>품목코드와 가격·위치 등을 직접 입력하거나 엑셀 양식으로 등록합니다.</p></div>
+            <div class="card"><span class="menu-icon">📊</span><h3>재고 현황</h3><p>현재고를 표나 카드로 확인하고 위치·재고·품목명으로 필터링합니다.</p></div>
+            <div class="card"><span class="menu-icon">🔄</span><h3>입출고 관리</h3><p>입고·출고를 기록하고 날짜, 품목, 수량과 비고 내역을 확인합니다.</p></div>
+            <div class="card"><span class="menu-icon">⚙️</span><h3>설정</h3><p>회사, 계정, 단축키, 빠른실행, 표 열과 DB 백업을 관리합니다.</p></div>
+          </div>
+        </section>
+
+        <section class="section topic" id="free-e-todo" data-keywords="투두 날짜 시간 칩 일정 자동 17일 7월 17일 8시에 8시 약속 08시 0건 건수 07-17 07/17 아홉시까지">
+          <span class="pill">새 투두 입력</span>
+          <h2>날짜와 시간을 쓰면 일정도 함께 만들어집니다</h2>
+          <ol class="steps">
+            <li>캘린더의 <b>일간</b> 화면에서 투두 입력칸을 누릅니다.</li>
+            <li><b>17일</b>을 쓰고 <kbd>Space</kbd>를 누르면 현재 미니 달력에서 선택한 달을 기준으로 <span class="pill">7월 17일</span> 날짜 칩이 생깁니다.</li>
+            <li>이어서 <b>8시에</b>를 쓰고 <kbd>Space</kbd>를 누르면 <span class="pill">8시</span> 시간 칩이 생깁니다.</li>
+            <li>뒤에 <b>약속</b>을 쓰고 <kbd>Enter</kbd> 또는 추가를 누릅니다.</li>
+          </ol>
+          <div class="callout good"><b>결과.</b> <b>17일 8시에 약속</b>은 선택한 달의 17일에 투두로 저장되고, 같은 날 <b>08:00~09:00</b> 일정도 자동 등록됩니다.</div>
+          <p class="muted">7월 17일·07-17·07/17 같은 날짜 형식과 09시~10시·09:00~10:00 같은 시간 범위도 사용할 수 있습니다.</p>
+          <div class="callout"><b>미니 달력 건수.</b> 일정이 없는 날짜에도 <b>0건</b>이 표시되고, 일정이 있으면 <b>1건·2건</b>처럼 실제 건수가 표시됩니다.</div>
+        </section>
+
+        <section class="section topic" id="free-e-settings" data-keywords="설정 회사 DB 홈 매입매출 기본기간 계정 단축키 빠른실행 테이블 헤더 드래그 브라우저 백업 복원 초기화 Pro 출력 디자인 멀티검색">
+          <span class="pill">저장 범위 확인</span>
+          <h2>설정은 누구에게 적용되는지 확인하세요</h2>
+          <div class="grid">
+            <div class="card"><h3>🏢 회사·DB</h3><p>회사명과 DB 백업·복원·초기화는 관리자용이며 서버 전체에 적용됩니다. 홈 매입·매출 기본기간(일간·주간·월간)과 거래 유형 색상은 일반 사용자도 바꿀 수 있지만 같은 서버 사용자 모두에게 공용 적용됩니다.</p></div>
+            <div class="card"><h3>👤 내 계정</h3><p>내 아이디·비밀번호·이름·이메일·찾기 질문은 현재 사용자 계정에 저장됩니다. 회원 검색과 일반·관리자 권한 변경은 관리자만 할 수 있습니다.</p></div>
+            <div class="card"><h3>⌨️ 단축키·빠른실행</h3><p>현재 로그인한 사용자별로 서버에 저장되므로 같은 계정으로 다른 PC나 브라우저에 로그인해도 이어집니다.</p></div>
+            <div class="card"><h3>📋 테이블 관리</h3><p>거래처·품목·재고현황·입출고 표의 헤더 이름과 표시 여부를 정합니다. 열 순서는 설정 화면이 아니라 각 목록 표의 실제 헤더를 좌우로 드래그해 바꾸며, 모두 현재 브라우저에만 저장됩니다.</p></div>
+          </div>
+          <h3>FREE에서 백업할 수 있는 6개 DB</h3>
+          <p><b>사용자/권한/회사설정 · 거래처 · 품목(품목코드) · 매입/매출 전표 · 일정/공휴일 · 개인 메모</b>를 필요한 종류별로 각각 받거나 복원할 수 있습니다.</p>
+          <div class="callout danger"><b>완전 초기화 전 확인.</b> 업무 데이터는 삭제되지만 회원 계정, 회사·사업자 정보, 출력 설정, 사용자별 환경설정과 회사 로고·워터마크·도장 자산은 유지됩니다. 실행 전 생기는 서버 내부 자동 백업만 믿지 말고, 먼저 DB 파일을 외장 저장소나 클라우드에 직접 받아 두세요.</div>
+          <div class="callout warn"><b>Pro 전용 설정.</b> 출력 디자인·멀티검색과 관리자의 출퇴근·전체 히스토리 설정은 FREE 화면에 나타나지 않습니다. Pro 전환은 관리자만 할 수 있으며 서버 전체에 적용됩니다.</div>
+        </section>
+
+        <section class="section topic" id="free-e-pro" data-keywords="무료 제한 pro 전환 프로젝트 전표 공지 출퇴근 검색 보고서">
+          <span class="pill pro">Pro 전용 안내</span>
+          <h2>FREE에서 보이지 않는 기능</h2>
+          <p class="lead">아래 기능은 오류가 아니라 Pro 전용이라 FREE 화면에서 숨겨진 것입니다.</p>
+          <div class="grid">
+            <div class="card"><h3>📁 협업·관리 기능</h3><p>프로젝트, 공지사항 관리, 직원 출퇴근, 전체 히스토리와 멘션 알림.</p></div>
+            <div class="card"><h3>🧾 전표·분석 기능</h3><p>판매입력·판매조회, 견적서, 거래명세서 인쇄, 월별·연도별 입출 현황.</p></div>
+            <div class="card"><h3>🔍 검색·모바일 기능</h3><p>F4 멀티검색, 전체 업무 검색, Pro 모바일 화면과 카메라 바코드 스캔.</p></div>
+            <div class="card"><h3>🔓 Pro 전환</h3><p>관리자가 설정 → Pro 전환에서 받은 코드 전체를 붙여넣으면 기존 데이터 그대로 기능이 열립니다.</p></div>
+          </div>
+        </section>
+      </article>
+
+      <article class="guide detail">
+        <section class="section topic" id="free-d-install" data-keywords="설치 실행 접속 포트 5001 서버 pc winget 인터넷 방화벽 예시 데이터 더미 네이버 카카오 완전 초기화">
+          <h2>1. 설치와 접속</h2>
+          <h3>서버 PC에서 처음 실행하기</h3>
+          <ol class="steps">
+            <li>FREE ZIP을 일반 폴더에 완전히 압축 해제합니다.</li>
+            <li><b>ONE_CLICK_START.bat</b>을 더블클릭합니다.</li>
+            <li>관리자 권한 요청이 나오면 <b>예</b>를 누릅니다.</li>
+            <li>Python이 없으면 자동 설치되고, 전용 가상환경과 필수 패키지가 준비됩니다.</li>
+            <li>완료 화면의 주소를 확인합니다. 서버 PC는 <b>http://localhost:5001</b>을 사용합니다.</li>
+          </ol>
+          <div class="callout warn">첫 실행은 인터넷, Windows winget, 관리자 권한이 필요하며 몇 분 걸릴 수 있습니다. 완전 오프라인 설치 파일은 아닙니다.</div>
+          <div class="callout good"><b>예시 데이터 안내.</b> 처음 실행하면 네이버·카카오 등 누구나 아는 이름으로 된 예시 거래처·품목·입출고 데이터가 미리 들어 있어 바로 화면을 둘러볼 수 있습니다. 실제 데이터를 입력하기 전에 설정 → 회사·DB → 완전 초기화로 지우고 시작하세요.</div>
+          <h3>다른 사내 PC에서 접속하기</h3>
+          <p>같은 공유기나 사내망의 다른 PC에서 실행 창에 표시된 <b>http://서버PC주소:5001</b>을 브라우저 주소창에 입력합니다. 서버 PC는 켜져 있어야 합니다.</p>
+          <h3>다시 실행하거나 중지하기</h3>
+          <ul class="checklist"><li>다시 시작은 ONE_CLICK_START.bat 또는 SERVER_RESTART.bat을 사용합니다.</li><li>중지는 SERVER_STOP.bat을 사용합니다.</li><li>자동 실행은 start_hidden.vbs 바로가기를 Windows 시작프로그램에 등록합니다.</li></ul>
+        </section>
+
+        <section class="section topic" id="free-d-account" data-keywords="로그인 회원가입 계정 비밀번호 아이디 찾기 관리자 권한">
+          <h2>2. 로그인과 계정</h2>
+          <div class="grid">
+            <div class="card"><h3>최초 관리자</h3><p><b>admin / admin</b>으로 로그인한 뒤 설정 → 내 계정에서 비밀번호, 이메일, 찾기 질문을 즉시 변경합니다.</p></div>
+            <div class="card"><h3>일반 사용자</h3><p>로그인 화면에서 회원가입합니다. 관리자는 설정 → 내 계정의 회원 관리에서 권한을 확인할 수 있습니다.</p></div>
+            <div class="card"><h3>아이디 찾기</h3><p>가입할 때 입력한 이름·이메일·부서 정보를 이용합니다.</p></div>
+            <div class="card"><h3>비밀번호 재설정</h3><p>가입 시 저장한 이메일과 찾기 질문 답변이 필요합니다. 답변 원문은 관리자도 볼 수 없습니다.</p></div>
+          </div>
+        </section>
+
+        <section class="section topic" id="free-d-home" data-keywords="홈 달력 캘린더 일정 일간 주간 월간 메모 태그 완료">
+          <h2>3. 홈·캘린더·메모</h2>
+          <h3>🏠 홈</h3>
+          <p>로그인 후 가장 먼저 보이는 요약 화면입니다. 홈 달력에서 날짜를 확인하고, 일정과 매입·매출 요약, 최근 공지 영역, 개인 메모를 한 번에 확인합니다.</p>
+          <h3>📅 캘린더</h3>
+          <ul class="checklist"><li><b>일간</b>은 하루의 시간대별 일정과 할 일을 자세히 봅니다.</li><li>일간 화면의 미니 달력은 일정이 없는 날짜에도 <b>0건</b>을 표시하고, 일정이 있으면 <b>1건·2건</b>처럼 실제 건수를 표시합니다.</li><li><b>주간</b>은 선택한 7일 일정과 주차 계획을 함께 관리합니다.</li><li><b>월간</b>은 한 달 전체 일정을 빠르게 확인합니다.</li><li>날짜나 빈 시간대를 눌러 제목, 기간, 메모와 색상을 입력합니다.</li><li>한국 공휴일과 직접 등록한 일정이 함께 표시됩니다.</li></ul>
+          <h3>✅ 투두에서 일정 자동 등록</h3>
+          <ol class="steps"><li>일간 화면의 투두 입력칸에 <b>17일</b>을 씁니다.</li><li><kbd>Space</kbd>를 누르면 현재 미니 달력에서 선택한 달을 붙여 <span class="pill">7월 17일</span> 날짜 칩으로 바뀝니다.</li><li><b>8시에</b>를 쓰고 다시 <kbd>Space</kbd>를 누르면 <span class="pill">8시</span> 시간 칩으로 바뀝니다.</li><li><b>약속</b>을 입력하고 <kbd>Enter</kbd> 또는 추가를 누릅니다.</li><li>선택한 달의 17일에 투두가 저장되고 같은 날짜의 <b>08:00~09:00</b> 일정이 함께 만들어집니다.</li></ol>
+          <div class="table-wrap"><table><thead><tr><th>입력 예시</th><th>등록 결과</th></tr></thead><tbody><tr><td><b>17일 8시에 약속</b></td><td>선택한 달의 17일 투두와 08:00~09:00 일정.</td></tr><tr><td><b>07/17 점심식사</b></td><td>7월 17일 투두와 시간 없는 일정.</td></tr><tr><td><b>07-17 09시~10시 거래처 전화</b></td><td>7월 17일 09:00~10:00 투두와 일정.</td></tr><tr><td><b>아홉시까지 보고서</b></td><td>저장한 현재 시각부터 가장 가까운 오전 또는 오후 9시까지 일정.</td></tr><tr><td><b>12시까지 발주 확인</b></td><td>저장한 현재 시각부터 가장 가까운 12시까지 일정.</td></tr></tbody></table></div>
+          <div class="callout warn"><b>17일</b>처럼 월을 생략하면 미니 달력에 현재 표시된 선택 월을 사용합니다. 날짜를 쓰지 않으면 현재 열어 둔 일간 날짜에 저장되고, <b>~시까지</b>의 시작 시각은 입력을 저장한 실제 시각입니다.</div>
+          <h3>📝 메모</h3>
+          <p>개인 업무를 짧게 기록하는 공간입니다. 태그를 선택하거나 새 태그를 만들고, 메모를 드래그해 순서를 바꿀 수 있습니다. 끝난 메모는 완료 처리한 뒤 완료목록에서 검색하거나 날짜로 찾습니다.</p>
+        </section>
+
+        <section class="section topic" id="free-d-manage" data-keywords="거래처 품목 등록 엑셀 csv 사진 사업자등록증 품목코드 가격 위치">
+          <h2>4. 거래처와 품목 등록</h2>
+          <h3>🏬 거래처 등록</h3>
+          <ol class="steps"><li>관리 → 거래처 등록을 엽니다.</li><li>직접 등록을 누르고 거래처명, 사업자번호, 대표자, 연락처 등을 입력합니다.</li><li>필요하면 거래처 사진이나 사업자등록증 이미지를 첨부합니다.</li><li>저장 후 검색창으로 거래처를 찾아 수정하거나 삭제합니다.</li></ol>
+          <h3>📦 품목 등록</h3>
+          <ol class="steps"><li>관리 → 품목 등록에서 직접 등록을 누릅니다.</li><li>중복되지 않는 품목코드, 품목명, 규격, 단위, 위치, 매입가와 판매가를 입력합니다.</li><li>품목이 많으면 양식 다운로드 후 XLSX 또는 CSV를 작성해 양식 업로드를 사용합니다.</li><li>설정 → 테이블 관리에서 헤더 이름과 표시 여부를 정하고, 열 순서는 품목 목록 표의 실제 헤더를 좌우로 드래그해 조절합니다.</li></ol>
+          <div class="callout">입출고를 시작하기 전에 품목코드를 먼저 확정하세요. 같은 품목에 여러 코드를 사용하면 재고가 나뉘어 계산됩니다.</div>
+        </section>
+
+        <section class="section topic" id="free-d-stock" data-keywords="재고 현황 입고 출고 반품 품목코드 수량 바코드 엑셀 조정">
+          <h2>5. 재고 현황과 입출고</h2>
+          <h3>🔄 입고 처리</h3>
+          <ol class="steps"><li>입출고 관리에서 입고를 누르거나 <kbd>F9</kbd>를 누릅니다.</li><li>품목코드를 입력하고 Enter를 눌러 목록에 추가합니다.</li><li>수량과 매입 단가를 확인하고 비고를 입력합니다.</li><li>전체 입고 처리를 눌러 저장합니다.</li></ol>
+          <h3>🔄 출고 처리</h3>
+          <ol class="steps"><li>입출고 관리에서 출고를 누르거나 <kbd>F10</kbd>을 누릅니다.</li><li>품목코드를 입력하고 수량·판매 단가를 확인합니다.</li><li>필요하면 채널, 주문번호, 송장번호와 비고를 입력합니다.</li><li>전체 출고 처리를 누르고 재고 현황에서 수량을 확인합니다.</li></ol>
+          <h3>📊 재고 현황</h3>
+          <p>표 보기와 카드 보기를 선택할 수 있습니다. 위치, 현재고 상태, 품목명, 단위로 필터링하고 위치순·현재고순·품목명순으로 정렬합니다. 엑셀 다운로드로 현재 재고를 별도 보관할 수 있습니다.</p>
+          <div class="callout warn">FREE는 PC 고정 화면 방식입니다. 모바일 카메라 바코드 스캔과 모바일 전용 화면은 Pro 기능이며, FREE에서는 품목코드를 직접 입력하는 방식을 권장합니다.</div>
+        </section>
+
+        <section class="section topic" id="free-d-settings" data-keywords="설정 회사 db 백업 복원 초기화 계정 단축키 빠른실행 테이블">
+          <h2>6. 설정과 백업</h2>
+          <div class="table-wrap"><table><thead><tr><th>설정 메뉴</th><th>하는 일</th><th>권한·저장 범위</th></tr></thead><tbody>
+            <tr><td><b>회사·DB</b></td><td>회사명, 홈 매입·매출 기본기간(일간·주간·월간)과 거래 유형 색상을 저장합니다. 관리자는 FREE용 6개 DB의 백업·복원과 업무 데이터 완전 초기화도 관리합니다.</td><td>회사·DB 작업은 <b>관리자</b> 전용입니다. 홈 기본기간과 거래 유형 색상은 일반 사용자도 변경할 수 있지만 <b>서버 공용</b>이라 같은 서버의 모든 사용자 화면에 적용됩니다.</td></tr>
+            <tr><td><b>내 계정</b></td><td>아이디, 비밀번호, 이름, 이메일, 찾기 질문을 변경합니다. 관리자는 회원을 검색하고 일반·관리자 권한을 정합니다.</td><td>내 정보는 <b>현재 사용자 계정</b>에 서버 저장되어 다른 PC·브라우저에서도 이어집니다. 회원 관리는 관리자 전용입니다.</td></tr>
+            <tr><td><b>단축키</b></td><td>기능 키와 사이드바 단축키 표시 여부를 바꾸고 기본값으로 되돌립니다.</td><td><b>사용자별 서버 저장</b>이라 같은 계정으로 로그인하면 다른 PC·브라우저에도 적용됩니다.</td></tr>
+            <tr><td><b>빠른실행</b></td><td>상단에 표시할 입고·출고·메모·거래처 등 자주 쓰는 버튼을 선택합니다.</td><td><b>사용자별 서버 저장</b>이며 다른 사용자의 버튼 구성에는 영향을 주지 않습니다.</td></tr>
+            <tr><td><b>테이블 관리</b></td><td>거래처·품목·재고현황·입출고 표의 헤더 이름과 표시 여부를 관리합니다. 열 순서는 각 목록 표의 <b>실제 헤더를 좌우로 드래그</b>해 바꿉니다.</td><td><b>현재 브라우저 프로필에만 로컬 저장</b>되며 사용자 계정이나 서버에는 동기화되지 않습니다.</td></tr>
+            <tr><td><b>Pro 전환</b></td><td>발급받은 Pro 코드 전체를 붙여넣어 현재 데이터를 유지한 채 Pro 기능을 엽니다.</td><td><b>관리자</b>만 실행할 수 있고 <b>서버 전체</b>에 적용됩니다.</td></tr>
+          </tbody></table></div>
+          <h3>설정 탭을 사용하는 순서</h3>
+          <ol class="steps"><li>좌측 설정 메뉴에서 바꿀 항목을 선택합니다.</li><li>위 표에서 관리자 전용인지, 서버 공용인지, 사용자별인지, 현재 브라우저 전용인지 먼저 확인합니다.</li><li>현재 값을 확인하고 필요한 항목만 변경합니다.</li><li>해당 화면의 저장 또는 적용 버튼을 누른 뒤 성공 안내를 확인합니다.</li><li>테이블 열 순서를 바꿀 때는 설정을 닫고 해당 목록 표의 실제 헤더를 원하는 위치로 드래그합니다.</li></ol>
+          <div class="callout"><b>Pro 전용.</b> FREE에서는 출력 디자인·멀티검색 설정과 관리자의 출퇴근·전체 히스토리가 보이지 않습니다. 관리자 캘린더에 직원 출퇴근 시각을 표시하는 옵션도 Pro 전용이며, Pro 전환이 완료되면 해당 설정 메뉴가 열립니다.</div>
+          <h3>안전한 DB 백업 방법</h3>
+          <ol class="steps"><li>관리자 계정으로 설정 → 회사·DB를 엽니다.</li><li>FREE에 표시되는 <b>사용자/권한/회사설정, 거래처, 품목(품목코드), 매입/매출 전표, 일정/공휴일, 개인 메모</b>의 6개 DB 중 필요한 행의 받기를 누릅니다.</li><li>다운로드한 DB 파일을 날짜와 DB 종류가 구분되도록 외장 저장소나 클라우드에 보관합니다.</li><li>복원할 때는 반드시 같은 종류의 DB 행에서 복원을 누르고 해당 파일을 선택합니다.</li></ol>
+          <div class="callout danger"><b>업무 데이터 완전 초기화</b>는 거래처·품목·입출고·매입매출·전표·일정·프로젝트·메모·공지·출퇴근·히스토리와 업무 첨부파일을 삭제합니다. 회원 계정, 회사·사업자 정보, 출력 설정, 사용자별 환경설정과 회사 로고·워터마크·도장 자산은 유지됩니다. 실행 전 서버 내부에 자동 백업 폴더가 만들어지지만 외부 수동 백업을 대신하지 않으므로, 초기화 전에 위 6개 DB를 직접 내려받아 별도 장치에 보관하세요.</div>
+        </section>
+
+        <section class="section topic" id="free-d-upgrade" data-keywords="pro 전환 활성화 코드 라이선스 재설치 관리자">
+          <h2>7. Pro 버전으로 전환하기</h2>
+          <ol class="steps"><li>판매자에게 받은 <b>PRO CODE 전체</b>를 준비합니다.</li><li>관리자 계정으로 로그인합니다.</li><li>설정 → Pro 전환을 엽니다.</li><li>코드 전체를 붙여넣고 Pro로 전환을 누릅니다.</li><li>완료 안내 후 화면이 다시 열리면 프로젝트·전표 등 Pro 메뉴가 표시됩니다.</li></ol>
+          <div class="callout good">전환해도 기존 거래처·품목·입출고·메모 데이터는 유지됩니다. 재설치 후에도 같은 코드를 다시 입력할 수 있습니다.</div>
+        </section>
+
+        <section class="section topic" id="free-d-shortcut" data-keywords="단축키 f1 f2 f3 f4 f6 f8 f9 f10 스페이스바">
+          <h2>8. FREE 기본 단축키</h2>
+          <div class="table-wrap"><table><thead><tr><th>키</th><th>기본 기능</th><th>키</th><th>기본 기능</th></tr></thead><tbody>
+            <tr><td><kbd>F1</kbd></td><td>일간 달력</td><td><kbd>F2</kbd></td><td>주간 달력</td></tr>
+            <tr><td><kbd>F3</kbd></td><td>월간 달력</td><td><kbd>F4</kbd></td><td>품목 등록 탭</td></tr>
+            <tr><td><kbd>F6</kbd></td><td>거래처 바로 등록</td><td><kbd>F8</kbd></td><td>재고 현황 탭</td></tr>
+            <tr><td><kbd>F9</kbd></td><td>입고</td><td><kbd>F10</kbd></td><td>출고</td></tr>
+            <tr><td><kbd>Space</kbd></td><td>개인 메모</td><td><kbd>Shift</kbd>+<kbd>Space</kbd></td><td>홈</td></tr>
+            <tr><td><kbd>Ctrl</kbd>+<kbd>1</kbd></td><td>거래처 등록 탭</td><td colspan="2">입력칸에 글을 쓰는 중에는 단축키가 동작하지 않습니다.</td></tr>
+          </tbody></table></div>
+        </section>
+
+        <section class="section topic" id="free-d-help" data-keywords="문제 오류 접속 안됨 실행 python winget 방화벽 비밀번호 데이터">
+          <h2>9. 자주 발생하는 문제</h2>
+          <details><summary>ONE_CLICK_START.bat이 설치 중 멈춥니다.</summary><div>인터넷 연결과 winget 사용 가능 여부를 확인하고 관리자 권한으로 다시 실행하세요. 폴더의 install-start.log 마지막 부분에서 실제 오류를 확인할 수 있습니다.</div></details>
+          <details><summary>다른 PC에서 접속되지 않습니다.</summary><div>서버 PC가 켜져 있는지, 두 PC가 같은 네트워크인지, 실행 화면의 IP 주소와 5001 포트를 정확히 입력했는지 확인합니다. Windows 방화벽 승인도 필요합니다.</div></details>
+          <details><summary>admin 비밀번호를 잊었습니다.</summary><div>미리 저장한 이메일과 찾기 질문 답변으로 재설정합니다. 아무 정보도 등록하지 않았다면 정상적인 화면 절차로 복구할 수 없으므로 최초 로그인 직후 반드시 설정하세요.</div></details>
+          <details><summary>재고 수량이 예상과 다릅니다.</summary><div>입출고 관리에서 해당 품목코드의 입고·출고·반품 내역을 확인합니다. 같은 품목이 다른 품목코드로 중복 등록되지 않았는지도 확인하세요.</div></details>
+          <details><summary>백업 파일을 복원했는데 일부 내용만 바뀝니다.</summary><div>데이터가 도메인별 DB로 나뉘어 있으므로 선택한 DB 종류만 복원됩니다. 필요한 다른 DB도 각각 복원해야 합니다.</div></details>
+        </section>
+      </article>
+    </main>
+  </div>
+
+  <footer class="footer">재고 관리 FREE 사용설명서 · 프로그램 실행 파일과 독립적으로 열 수 있습니다.</footer>
+  <script>
+    function setMode(mode){
+      document.body.dataset.mode=mode;
+      document.querySelectorAll('.guide').forEach(x=>x.classList.toggle('active',x.classList.contains(mode)));
+      document.querySelectorAll('.mode-btn').forEach(x=>x.classList.toggle('active',x.dataset.mode===mode));
+      document.getElementById('easy-nav').hidden=mode!=='easy';
+      document.getElementById('detail-nav').hidden=mode!=='detail';
+      document.getElementById('guide-search').value='';searchGuide('');window.scrollTo({top:0,behavior:'smooth'});
+    }
+    function searchGuide(value){
+      const q=value.trim().toLowerCase(),active=document.querySelector('.guide.active');let shown=0;
+      active.querySelectorAll('.topic').forEach(x=>{const hit=!q||(x.textContent+' '+(x.dataset.keywords||'')).toLowerCase().includes(q);x.classList.toggle('hidden',!hit);if(hit)shown++;});
+      document.getElementById('empty-search').style.display=shown?'none':'block';
+    }
+  </script>
+</body>
+</html>

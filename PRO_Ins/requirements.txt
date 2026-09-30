@@ -1,0 +1,8 @@
+Flask==3.0.3
+openpyxl==3.1.5
+waitress==3.0.2
+cryptography==44.0.2
+holidays==0.100
+qrcode==7.4.2
+pystray==0.19.5
+Pillow==10.4.0

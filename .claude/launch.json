@@ -1,0 +1,29 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "inventory",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["app.py"],
+      "port": 5000
+    },
+    {
+      "name": "inventory-5001",
+      "runtimeExecutable": ".venv\\Scripts\\python.exe",
+      "runtimeArgs": ["-c", "from app import app, bootstrap; bootstrap(); from waitress import serve; serve(app, host='127.0.0.1', port=5001, threads=4)"],
+      "port": 5001
+    },
+    {
+      "name": "pro-verify-5002",
+      "runtimeExecutable": "PRO\\.venv\\Scripts\\python.exe",
+      "runtimeArgs": ["-c", "import os,sys; os.chdir('PRO'); sys.path.insert(0,'.'); from app import app, bootstrap; bootstrap(); from waitress import serve; serve(app, host='127.0.0.1', port=5002, threads=4)"],
+      "port": 5002
+    },
+    {
+      "name": "free-verify-5003",
+      "runtimeExecutable": "FREE\\.venv\\Scripts\\python.exe",
+      "runtimeArgs": ["-c", "import os,sys; os.chdir('FREE'); sys.path.insert(0,'.'); from app import app, bootstrap; bootstrap(); from waitress import serve; serve(app, host='127.0.0.1', port=5003, threads=4)"],
+      "port": 5003
+    }
+  ]
+}
