@@ -1537,7 +1537,7 @@ def api_items_delete():
 @app.route("/api/items/import", methods=["POST"])
 @login_required
 def api_items_import():
-    """엑셀(xlsx)/csv 일괄 업로드: 품목코드|품목명|규격|단위|위치|매입가|판매가|유통사|제조사"""
+    """엑셀(xlsx)/csv 일괄 업로드: 품목코드|품목명|규격|단위|위치|매입단가|판매단가|유통사|제조사"""
     f = request.files.get("file")
     if not f:
         return jsonify(ok=False, error="파일이 없습니다.")
@@ -1706,7 +1706,7 @@ def _xlsx_response(title, headers, rows, filename):
 def api_template(kind):
     if kind == "items":
         return _xlsx_response("품목 양식",
-                              ["품목코드", "품목명", "규격", "단위", "위치", "매입가", "판매가", "유통사", "제조사"],
+                              ["품목코드", "품목명", "규격", "단위", "위치", "매입단가", "판매단가", "유통사", "제조사"],
                               [["A-0001", "예시 품목", "규격", "개", "A-01", 0, 0, "예시유통", "예시제조"]],
                               "품목_등록_양식.xlsx")
     if kind == "tx":
@@ -1734,7 +1734,7 @@ def api_export(kind):
         rows = conn.execute("""SELECT sku,name,spec,unit,location,buy_price,sell_price,
             distributor,manufacturer,created_at FROM items ORDER BY sku""").fetchall()
         conn.close()
-        return _xlsx_response("품목", ["품목코드", "품목명", "규격", "단위", "위치", "매입가", "판매가",
+        return _xlsx_response("품목", ["품목코드", "품목명", "규격", "단위", "위치", "매입단가", "판매단가",
                               "유통사", "제조사", "등록시각"], rows, "품목.xlsx")
     if kind in ("tx", "inout"):
         conn = get_db("transactions")

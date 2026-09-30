@@ -2367,7 +2367,7 @@ async function saveContact(id){
 async function delContact(id){if(!confirm('삭제?'))return;await post('/api/contacts/delete',{id});RENDER.contacts();}
 
 // ── 품목 ──
-const ITEM_COLS=[['sku','품목코드'],['name','품목명'],['spec','규격'],['unit','단위'],['location','위치'],['buy_price','매입가'],['sell_price','판매가'],['distributor','유통사'],['manufacturer','제조사']];
+const ITEM_COLS=[['sku','품목코드'],['name','품목명'],['spec','규격'],['unit','단위'],['location','위치'],['buy_price','매입단가'],['sell_price','판매단가'],['distributor','유통사'],['manufacturer','제조사']];
 let itemHidden=JSON.parse(localStorage.getItem('item_hidden')||'[]');
 restoreColumnOrder(ITEM_COLS,'item_order');
 RENDER.items=async function(){
@@ -2379,20 +2379,31 @@ RENDER.items=async function(){
      <a class="tb-btn btn-gray" href="/api/template/items">양식 다운로드</a>
      <label class="tb-btn btn-green" style="cursor:pointer;">양식 업로드<input type="file" id="item-file" accept=".xlsx,.csv" style="display:none;" onchange="importItems(this)"></label>
      <a class="tb-btn btn-green" href="/api/export/items">엑셀 다운로드</a>
-     <span style="font-size:11px;color:var(--muted)">엑셀: 품목코드|품목명|규격|단위|위치|매입가|판매가|유통사|제조사</span>
+     <span style="font-size:11px;color:var(--muted)">엑셀: 품목코드|품목명|규격|단위|위치|매입단가|판매단가|유통사|제조사</span>
      <button id="items-filter-btn" class="filter-collapse-btn${filterPanelOpen.items?' open':''}" style="margin-left:auto" onclick="toggleFilterPanel('items')">${filterPanelOpen.items?'▲ 헤더설정':'▼ 헤더설정'}</button>
    </div>
    <div id="items-filter-panel" class="filter-panel${filterPanelOpen.items?'':' hide'}">${ITEM_COLS.map(([k,l])=>`<span class="chip ${itemHidden.includes(k)?'':'on'}" onclick="toggleCol('${k}')">${getLabel('item',k,l)}</span>`).join('')}</div>
-   <div class="panel"><div class="tbl-wrap"><table class="grid"><thead><tr id="item-head"></tr></thead><tbody id="item-body"></tbody></table></div></div>`;
+   <div class="panel"><div class="tbl-wrap"><table class="grid"><thead><tr id="item-head"></tr></thead><tbody id="item-body"></tbody></table></div></div>
+   <div id="item-pager" style="display:flex;gap:8px;align-items:center;margin-top:8px"></div>`;
   renderItems(r);
 };
 function toggleCol(k){const i=itemHidden.indexOf(k);if(i<0)itemHidden.push(k);else itemHidden.splice(i,1);localStorage.setItem('item_hidden',JSON.stringify(itemHidden));RENDER.items();}
-function renderItems(r){
-  const cols=ITEM_COLS.filter(([k])=>!itemHidden.includes(k));
-  el('item-head').innerHTML=cols.map(([k,l])=>`<th draggable="true" data-col="${k}" ondragstart="colDragStart(event,'item')" ondragover="colDragOver(event)" ondragleave="this.classList.remove('drag-over')" ondrop="colDrop(event,'item','${k}')">${getLabel('item',k,l)}</th>`).join('')+'<th>사진</th><th></th>';
+let ITEM_ROWS=[],ITEM_SORT={k:'',dir:1},ITEM_PAGE=1,ITEM_PAGE_SIZE=50;
+function sortItems(k){if(ITEM_SORT.k===k)ITEM_SORT.dir*=-1;else ITEM_SORT={k,dir:1};ITEM_PAGE=1;drawItems();}
+function gotoItemPage(n){ITEM_PAGE=n;drawItems();el('item-body')?.closest('.tbl-wrap')?.scrollTo(0,0);}
+function setItemPageSize(n){ITEM_PAGE_SIZE=Number(n);ITEM_PAGE=1;drawItems();}
+function renderItems(r){ITEM_ROWS=r;ITEM_PAGE=1;drawItems();}
+function drawItems(){
+  const cols=ITEM_COLS.filter(([k])=>!itemHidden.includes(k)),{k:sk,dir}=ITEM_SORT;
+  const rows=ITEM_ROWS.slice();
+  if(sk)rows.sort((a,b)=>{const x=a[sk],y=b[sk];return(sk.includes('price')?(Number(x)||0)-(Number(y)||0):String(x||'').localeCompare(String(y||''),'ko',{numeric:true}))*dir;});
+  const pages=Math.max(1,Math.ceil(rows.length/ITEM_PAGE_SIZE));ITEM_PAGE=Math.min(ITEM_PAGE,pages);
+  const r=rows.slice((ITEM_PAGE-1)*ITEM_PAGE_SIZE,ITEM_PAGE*ITEM_PAGE_SIZE);
+  el('item-head').innerHTML=cols.map(([k,l])=>`<th draggable="true" data-col="${k}" style="cursor:pointer" title="클릭하면 정렬됩니다" onclick="sortItems('${k}')" ondragstart="colDragStart(event,'item')" ondragover="colDragOver(event)" ondragleave="this.classList.remove('drag-over')" ondrop="colDrop(event,'item','${k}')">${getLabel('item',k,l)}${sk===k?(dir>0?' ▲':' ▼'):''}</th>`).join('')+'<th>사진</th><th></th>';
   el('item-body').innerHTML=r.length?r.map(it=>`<tr data-item-id="${it.id}">${cols.map(([k])=>`<td>${k.includes('price')?won(it[k]):esc(it[k]||'')}</td>`).join('')}
     <td>${it.photo?`<a href="/uploads/${it.photo}" target="_blank">보기</a>`:''}</td>
     <td><button class="tb-btn btn-gray btn-sm" onclick='openItemModal(${JSON.stringify(it)})'>수정</button> <button class="tb-btn btn-danger btn-sm" onclick="delItem(${it.id})">삭제</button></td></tr>`).join(''):`<tr><td colspan="${cols.length+2}" class="empty">품목 없음</td></tr>`;
+  const pg=el('item-pager');if(pg)pg.innerHTML=`<span class="meta">총 ${won(rows.length)}개</span><span style="flex:1"></span><button class="tb-btn btn-gray btn-sm" ${ITEM_PAGE<=1?'disabled':''} onclick="gotoItemPage(${ITEM_PAGE-1})">◀ 이전</button><span class="meta">${ITEM_PAGE} / ${pages}</span><button class="tb-btn btn-gray btn-sm" ${ITEM_PAGE>=pages?'disabled':''} onclick="gotoItemPage(${ITEM_PAGE+1})">다음 ▶</button><select class="inp" style="width:auto" onchange="setItemPageSize(this.value)">${[20,50,100,200].map(n=>`<option value="${n}" ${n===ITEM_PAGE_SIZE?'selected':''}>${n}개씩</option>`).join('')}</select>`;
 }
 async function searchItems(q){renderItems(await api('/api/items?q='+encodeURIComponent(q)));}
 function openItemModal(it){it=it||{};
@@ -2400,7 +2411,7 @@ function openItemModal(it){it=it||{};
    <div class="row"><label class="fld">품목코드<input id="i-sku" value="${esc(it.sku||'')}"></label><label class="fld">품목명<input id="i-name" value="${esc(it.name||'')}"></label></div>
    <div class="row"><label class="fld">규격<input id="i-spec" value="${esc(it.spec||'')}"></label><label class="fld">단위<input id="i-unit" value="${esc(it.unit||'')}"></label></div>
    <label class="fld" style="margin-bottom:10px;">위치<input id="i-location" value="${esc(it.location||'')}" placeholder="예: A창고-01 선반"></label>
-   <div class="row"><label class="fld">매입가<input type="number" id="i-buy" value="${it.buy_price||0}"></label><label class="fld">판매가<input type="number" id="i-sell" value="${it.sell_price||0}"></label></div>
+   <div class="row"><label class="fld">매입단가<input type="number" id="i-buy" value="${it.buy_price||0}"></label><label class="fld">판매단가<input type="number" id="i-sell" value="${it.sell_price||0}"></label></div>
    <div class="row"><label class="fld">유통사<input id="i-distributor" value="${esc(it.distributor||'')}"></label><label class="fld">제조사<input id="i-manufacturer" value="${esc(it.manufacturer||'')}"></label></div>
    <label class="fld full">사진<input type="file" id="i-photo" accept="image/*"></label>
    <div class="actions"><button class="tb-btn btn-gray" onclick="closeModal()">취소</button><button class="tb-btn btn-primary" onclick="saveItem(${it.id||0})">저장</button></div>`);
@@ -3142,7 +3153,7 @@ function openQuickNewItem(sku,mode){
     <label class="fld">품목코드<input id="qi-sku" value="${esc(sku)}"></label>
     <div class="row"><label class="fld">품목명<input id="qi-name" autofocus></label><label class="fld">규격<input id="qi-spec"></label></div>
     <div class="row"><label class="fld">단위<input id="qi-unit" value="개"></label><label class="fld">위치<input id="qi-location"></label></div>
-    <div class="row"><label class="fld">매입가<input id="qi-buy" type="number" value="0"></label><label class="fld">판매가<input id="qi-sell" type="number" value="0"></label></div>
+    <div class="row"><label class="fld">매입단가<input id="qi-buy" type="number" value="0"></label><label class="fld">판매단가<input id="qi-sell" type="number" value="0"></label></div>
     <div class="row"><label class="fld">유통사<input id="qi-distributor"></label><label class="fld">제조사<input id="qi-manufacturer"></label></div>
     <div class="actions"><button class="tb-btn btn-gray" onclick="openStockModal('${mode}','${escQ(sku)}')">이전</button><button class="tb-btn btn-primary" onclick="saveQuickNewItem('${mode}')">등록 후 계속</button></div>`,520);
   setTimeout(()=>el('qi-name')?.focus(),40);
